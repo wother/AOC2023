@@ -15,16 +15,29 @@ function parseFile(inputFile) {
     const result = [];
     const lines = inputFile.split("\n");
     lines.forEach(line => {
-        result.push(parseLine(line));
+        if (!!parseLine(line)) {
+            result.push(parseLine(line));
+        }
     });
-    return result;
+    let total = 0;
+    result.forEach((game) => {
+        let gameNumber = game.split(" ")[1];
+        total += parseInt(gameNumber);
+    });
+    return total;
+}
+
+function sumGameNumbers(inputArray) {
+
 }
 
 // Example line: <Game index>: <pull>; <pull>; <pull>; <pull>
 function parseLine(inputLine) {
     let index = inputLine.split(":")[0];
     let pulls = inputLine.split(":")[1].split(";");
-    return `${index}: ${parsePulls(pulls)}`;
+    if (parsePulls(pulls)) {
+        return index;
+    }
 }
 
 /**
@@ -33,18 +46,37 @@ function parseLine(inputLine) {
  * @returns boolean
  */
 function parsePulls(inputPull) {
-    let count = 0;
-    let pullObject = {};
+    let gameCounts = {
+        red: 0,
+        green: 0,
+        blue: 0
+    };
     inputPull.forEach((pull) => {
-        pullObject = countPull(pull);
+        const pullObj = countPull(pull);
+        gameCounts.red = (gameCounts.red < pullObj.red) ? pullObj.red : gameCounts.red;
+        gameCounts.green = (gameCounts.green < pullObj.green) ? pullObj.green : gameCounts.green;
+        gameCounts.blue = (gameCounts.blue < pullObj.blue) ? pullObj.blue : gameCounts.blue;
     });
     // this gonna be nasty... hold onto your butts
-    if (pullObject.red == 12 && pullObject.green == 13 && pullObject.blue == 14) {
+    if (gameCounts.red <= 12 &&
+        gameCounts.green <= 13 &&
+        gameCounts.blue <= 14) {
         return true;
     } else {
         return false;
     }
 }
+
+function gameStats(inputPull) {
+    let output = {
+        maxRed: 0,
+        maxGreen: 0,
+        maxBlue: 0,
+        totalPull: 0
+    };
+
+}
+
 
 /**
  * example input: 2 green, 7 blue, 2 red
@@ -60,14 +92,19 @@ function countPull(inputPullString) {
     };
     pullArray.forEach(pull => {
         const colorCount = countColor(pull);
-        result[colorCount.color] = colorCount.count;
+        result[colorCount.color] = parseInt(colorCount.count);
     });
     return result;
 }
 
 function countColor(inputColor) {
+    // trim leading whitespace
+    inputColor = inputColor.trim();
     // format is ## COLOR
     const color = inputColor.split(" ")[1];
+    if (color.endsWith("/r")) {
+        color = color.substring(0, color.length - 2);
+    }
     const count = inputColor.split(" ")[0];
     return {
         color: color,
