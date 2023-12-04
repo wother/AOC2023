@@ -27,12 +27,8 @@ function parseFile(inputFile) {
     return total;
 }
 
-function sumGameNumbers(inputArray) {
-
-}
-
 // Example line: <Game index>: <pull>; <pull>; <pull>; <pull>
-function parseLine(inputLine) {
+export function parseLine(inputLine) {
     let index = inputLine.split(":")[0];
     let pulls = inputLine.split(":")[1].split(";");
     if (parsePulls(pulls)) {
@@ -67,23 +63,13 @@ function parsePulls(inputPull) {
     }
 }
 
-function gameStats(inputPull) {
-    let output = {
-        maxRed: 0,
-        maxGreen: 0,
-        maxBlue: 0,
-        totalPull: 0
-    };
-
-}
-
 
 /**
  * example input: 2 green, 7 blue, 2 red
  * @param {String} inputPullString 
  * @returns 
  */
-function countPull(inputPullString) {
+export function countPull(inputPullString) {
     const pullArray = inputPullString.split(",");
     const result = {
         red: 0,
